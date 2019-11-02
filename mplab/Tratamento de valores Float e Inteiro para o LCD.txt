@@ -1,0 +1,42 @@
+//Bibliotecas necessárias
+
+#include <stdlib.h>
+#include <string.h>
+
+//Variáveis para auxílio à formatação da string.
+
+unsigned short ADCResult = 0;
+unsigned char Display1[5];
+unsigned char *Display2;
+
+// Converte os dois bytes em um valor inteiro (10 bits) para manipulação de dados.
+
+ADCResult = ((ADRESH << 8) + ADRESL);
+
+// Método 01 - Monta o valor de 10 bits para mandar para a USART ou LCD.
+
+Display1[0] = ((ADCResult / 1000) + 48);	// Obtém a milhar do valor.
+Display1[1] = ((ADCResult / 100) % 10) + 48;	// Obtém a centena do valor.
+Display1[2] = ((ADCResult / 10) % 10) + 48;	// Obtém a dezena do valor.
+Display1[3] = ((ADCResult % 10) + 48);		// Obtém a unidade do valor.
+
+// Método 02 - Monta o valor de 10 bits para mandar para a USART ou LCD.
+
+int status;  // Variáveis para a função ftoa funcionar corretamente.
+Display2 = ftoa((ADCResult * 0.0048828125), &status);
+
+//Utilização das variáveis formatadas.
+
+LCDCursor(0,0);
+LCDWriteString("INTEIRO:");
+LCDCursor(0,9);
+LCDWriteString(Display1);
+
+LCDCursor(1,0);
+LCDWriteString("VOLTS:");
+LCDCursor(1,7);
+LCDWriteString(Display2);
+
+
+
+
